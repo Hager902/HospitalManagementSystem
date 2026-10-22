@@ -1,6 +1,9 @@
 using System;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using LinqAssignment.Data;
 using LinqAssignment.Models;
 
 namespace LinqAssignment.Parts
@@ -54,7 +57,63 @@ namespace LinqAssignment.Parts
                 Console.WriteLine($"Name");
             }
 
+        }
+
+
+
+            public static async Task LinkAppointmentAsync(StudentPortalContext context)
+        {
+
+ 
+            var sarah = await context.Doctors
+            .FirstOrDefaultAsync(d => d.Name == "Dr. Sarah Ahmed ");
+
+            var mohammedAppointment = await context.Appointments
+            .FirstOrDefaultAsync(a => a.PatientName == "Mohammed Karim");
+
+            if(sarah is null || mohammedAppointment is null)
+            {
+                Console.WriteLine($"Not Found");
+                return;
+            }
+
+            mohammedAppointment.DoctorId = sarah.Id;
+            await context.SaveChangesAsync();
+            Console.WriteLine($"Linked appointment {mohammedAppointment.Id} to doctor {sarah.Id}.");
+
+        }
+
+
+        public static async Task ProveForeignKeyAsync(StudentPortalContext context)
+        {
+            try
+            {
+                var newPatient = new Appointment{ PatientName = "Test Patient", DoctorId = 9999, AppointmentDate = DateTime.Now, Fee = 100 };
+                context.Appointments.Add(newPatient);
+                await context.SaveChangesAsync();
+
+            }
+            
+            catch(DbUpdateException ex)
+            {
+                Console.WriteLine($"Exception: {ex.GetType().Name}");
+                Console.WriteLine($"Message: {ex.InnerException?.Message}");
+
+            }
+            
+            }
+
+
+
+    
+       
+
+
+
+
+
+
+
         
         }
     }
-}

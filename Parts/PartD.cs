@@ -1,7 +1,11 @@
 using System;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using LinqAssignment.Models;
+using LinqAssignment.Data;
+
 
 namespace LinqAssignment.Parts
 {
@@ -12,8 +16,8 @@ namespace LinqAssignment.Parts
             var joined = doctors
             .Join(
                 appointments,
-                d => d.Name,
-                a => a.DoctorName,
+                d => d.Id,
+                a => a.DoctorId,
                 (d, a) => new
                 {
                     DoctorName = d.Name,
@@ -29,7 +33,7 @@ namespace LinqAssignment.Parts
             }
 
             var joinedQuery = (from d in doctors
-                              join a in appointments on d.Name equals a.DoctorName
+                              join a in appointments on d.Id equals a.DoctorId
                               select new
                               {
                                     DoctorName = d.Name,
@@ -45,8 +49,14 @@ namespace LinqAssignment.Parts
 
             Console.WriteLine($"Total number of doctors: {doctors.Count()}");
             Console.WriteLine($"Rows in join result: {joined.Count}");
+
+
+            }
+        }
+
+
            
         }
-    }
-}
+    
+
 

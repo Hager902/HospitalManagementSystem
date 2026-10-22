@@ -26,9 +26,8 @@ namespace LINQAssignment.Migrations
                     b.Property<DateTime>("AppointmentDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("DoctorName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("DoctorId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<double>("Fee")
                         .HasColumnType("REAL");
@@ -38,6 +37,8 @@ namespace LINQAssignment.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
 
                     b.ToTable("Appointments");
                 });
@@ -50,6 +51,7 @@ namespace LINQAssignment.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(120)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Specialty")
@@ -79,6 +81,7 @@ namespace LINQAssignment.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<double>("HealthScore")
@@ -87,6 +90,21 @@ namespace LINQAssignment.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Patients");
+                });
+
+            modelBuilder.Entity("LinqAssignment.Models.Appointment", b =>
+                {
+                    b.HasOne("LinqAssignment.Models.Doctor", "Doctor")
+                        .WithMany("Appointments")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Doctor");
+                });
+
+            modelBuilder.Entity("LinqAssignment.Models.Doctor", b =>
+                {
+                    b.Navigation("Appointments");
                 });
 #pragma warning restore 612, 618
         }

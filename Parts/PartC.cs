@@ -1,6 +1,9 @@
 using System;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using LinqAssignment.Data;
 using LinqAssignment.Models;
 
 namespace LinqAssignment.Parts
@@ -63,9 +66,80 @@ foreach (var group in SortedGroups)
         Console.WriteLine($" HealthScore: {patient.HealthScore}");
     }
 }
+        }
+        
+ public static async Task RunAsync(StudentPortalContext context)
+        {
+
+var found = await context.Patients
+.FirstOrDefaultAsync(p => p.FullName == "Mohammed Karim");
+
+if(found is null)
+{
+    Console.WriteLine($"Patient is not found");
+    return;
+}
+else
+{
+    Console.WriteLine($"Patient Health Status : {found.HealthScore}");
+    
+
+}
+
+found.HealthScore = 5.5;
+Console.WriteLine($"Updated Health Score is : {found.HealthScore}");
+await context.SaveChangesAsync();
+
+
+var hager = new Patient
+{
+    FullName = "Hager Fathy",
+    Age = 30,
+    HealthScore = 5.5,
+    Department = "Internal Medicine"
+ };
+
+context.Patients.Add(hager);
+await context.SaveChangesAsync();
+Console.WriteLine($"Hager's Id : {hager.Id}");
+
+var myPatient = await context.Patients
+.FirstOrDefaultAsync(p => p.FullName == "Hager Fathy");
+
+if(myPatient is null)
+{
+    Console.WriteLine($"Patients is not Found");
+    return;
+}
+
+myPatient.Age = 31;
+await context.SaveChangesAsync();
+Console.WriteLine($"UpdatedAge is : {myPatient.Age}");
+
+var deletePatient = await context.Patients
+.Where(p => p.FullName == "Hager Fathy")
+.ToListAsync();
+
+if(deletePatient.Count == 0)
+{
+    Console.WriteLine($"Patient is not Found");
+    
+}
+
+else
+{
+
+context.Patients.RemoveRange(deletePatient);
+await context.SaveChangesAsync();
+Console.WriteLine($"Deletion succeeded : {deletePatient.Count}");
+}
+
+
+
+        }
 
 
         }
     }
-}
+
 

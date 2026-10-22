@@ -1,0 +1,60 @@
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace LINQAssignment.Migrations
+{
+    /// <inheritdoc />
+    public partial class AddDoctorAppointmentRelationship : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropColumn(
+                name: "DoctorName",
+                table: "Appointments");
+
+            migrationBuilder.AddColumn<int>(
+                name: "DoctorId",
+                table: "Appointments",
+                type: "INTEGER",
+                nullable: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_DoctorId",
+                table: "Appointments",
+                column: "DoctorId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Appointments_Doctors_DoctorId",
+                table: "Appointments",
+                column: "DoctorId",
+                principalTable: "Doctors",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.SetNull);
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Appointments_Doctors_DoctorId",
+                table: "Appointments");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Appointments_DoctorId",
+                table: "Appointments");
+
+            migrationBuilder.DropColumn(
+                name: "DoctorId",
+                table: "Appointments");
+
+            migrationBuilder.AddColumn<string>(
+                name: "DoctorName",
+                table: "Appointments",
+                type: "TEXT",
+                nullable: false,
+                defaultValue: "");
+        }
+    }
+}
